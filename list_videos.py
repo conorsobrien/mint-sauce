@@ -5,7 +5,7 @@ from googleapiclient.errors import HttpError
 
 
 # Set DEVELOPER_KEY to the API key value from your own developer
-DEVELOPER_KEY = 'AIzaSyAyw4vsJXpGZzDXVmpWLdd4a7QGLbURL14'
+DEVELOPER_KEY = ''
 YOUTUBE_API_SERVICE_NAME = 'youtube'
 YOUTUBE_API_VERSION = 'v3'
 
