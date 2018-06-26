@@ -4,9 +4,9 @@ from PIL import Image, ImageEnhance, ImageFilter, ImageOps
 img=Image.open('test.png')
 
 # Split image into separate images for analysis.
-iresult = img.crop((800,105,1140,130))
+iresult = img.crop((800,105,1140,130)) # First 2 coords are top left of image, next 2 are bottom right. All in pixels.
 ip1name = img.crop((281,372,509,393))
-ip1faction = img.crop(( 274,107,476,129))
+ip1faction = img.crop(( 70,185,320,90))
 ip2name = img.crop((1472,372,1680,395))
 ip2faction = img.crop((1454,105,1650,135))
 ip1u1 = img.crop((250,405,300,514))
