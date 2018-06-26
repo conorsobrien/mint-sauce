@@ -2,15 +2,16 @@
 from oauth2client.service_account import ServiceAccountCredentials
 from googleapiclient.discovery import build
 from googleapiclient.errors import HttpError
+import sqlite3
 
 
 # Set DEVELOPER_KEY to the API key value from your own developer
-DEVELOPER_KEY = ''
+DEVELOPER_KEY = 'AIzaSyAyw4vsJXpGZzDXVmpWLdd4a7QGLbURL14'
 YOUTUBE_API_SERVICE_NAME = 'youtube'
 YOUTUBE_API_VERSION = 'v3'
 
 # Connect to sqllite database
-conn = sqlite3.connect('C:/sqllite/fizzy-anvil')
+conn = sqlite3.connect('fizzy-anvil')
 cur = conn.cursor()
 
 # Gather list of videos we've already found.
@@ -32,7 +33,6 @@ search_response = youtube.search().list(
   maxResults=50
 ).execute()
 
-print(type(search_response.get('items', [])))
 
 # Set next page token for pagination
 nextPageToken = search_response.get("nextPageToken",False)
@@ -50,6 +50,7 @@ for search_result in search_response.get('items', []):
     titles.append('%s' % (search_result['snippet']['title']))
     urls.append('%s' % (search_result['id']))
 
+'''
 # Iterate through pages of search results.
 while nextPageToken:
   print("Before Next token: ",search_response['nextPageToken'])  
@@ -65,22 +66,26 @@ while nextPageToken:
   results.extend(search_response.get('items', []))
   # Reset next page token
   nextPageToken = search_response.get("nextPageToken",False)
+'''
 
 # Iterate through results
 for result in results:
-  print(result['id']['videoId'])
+#  print(result['id']['videoId'])
   video_response = youtube.videos().list(
     id=result['id']['videoId'],
     part='id,snippet,contentDetails'
   ).execute()
-  print(video_response)
+  duration = video_response['items'][0]['contentDetails']['duration']
+
   try:
-    cur.execute('''INSERT INTO videos(id, title, processed, downloaded, length, split) VALUES(?, ? , ? , ?, ?, ?)''',(result['id']['videoId'], result['snippet']['title'], 1,0, video_response['contentDetails']['duration'],0))
+    print(result['id']['videoId'] + " - " +  result['snippet']['title'] + " - " + duration)
+    cur.execute('''INSERT INTO videos(id, title, processed, downloaded, length, split) VALUES(?, ? , ? , ?, ?, ?)''',(result['id']['videoId'], result['snippet']['title'], 1,0, duration,0))
     conn.commit()
     print("Processed")
   except Exception as e:
-    print("Failed to write to DB")
+    print("Failed to write to DB. Error - " + e)
     print(e)
+
 conn.close()
 
 
