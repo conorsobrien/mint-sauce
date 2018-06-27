@@ -2,15 +2,17 @@ import sqlite3
 import os
 from pytube import YouTube
 
+print("Test")
 # Open SQLLite connection
-conn = sqlite3.connect('C:/sqllite/fizzy-anvil')
+conn = sqlite3.connect('fizzy-anvil')
 cur = conn.cursor()
 
 # Retrieve list of previously processed links from database. Don't want to re-process these if avoidable.
 cur.execute('''SELECT id
                 FROM videos
                 where downloaded = 0
-                and id in ("BIkHTKk2xf0","A2KUqitayfw") ''')
+		and length not like '%H%'
+	''')
 all_rows = cur.fetchall()
 processed_videos = []
 for row in all_rows:
@@ -23,8 +25,10 @@ for row in all_rows:
     # Download the video
     url = "https://www.youtube.com/watch?v=" + videoid
     yt = YouTube(url)
+    print(yt.streams)
     print(yt.streams.filter(audio_codec=None, res="720p", fps=30).all())
-    stream = yt.streams.get_by_itag(136)
+    #stream = yt.streams.get_by_itag(136)
+    stream = yt.streams.first()
     print(stream)
     stream.download('videos/' + videoid, filename=videoid)
 
