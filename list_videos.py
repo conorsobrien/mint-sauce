@@ -6,7 +6,8 @@ import sqlite3
 
 
 # Set DEVELOPER_KEY to the API key value from your own developer
-DEVELOPER_KEY = 'AIzaSyAyw4vsJXpGZzDXVmpWLdd4a7QGLbURL14'
+key_file = open("google-api-key.txt")
+DEVELOPER_KEY = key_file.readline().rstrip()
 YOUTUBE_API_SERVICE_NAME = 'youtube'
 YOUTUBE_API_VERSION = 'v3'
 
@@ -50,7 +51,7 @@ for search_result in search_response.get('items', []):
     titles.append('%s' % (search_result['snippet']['title']))
     urls.append('%s' % (search_result['id']))
 
-'''
+
 # Iterate through pages of search results.
 while nextPageToken:
   print("Before Next token: ",search_response['nextPageToken'])  
@@ -66,7 +67,8 @@ while nextPageToken:
   results.extend(search_response.get('items', []))
   # Reset next page token
   nextPageToken = search_response.get("nextPageToken",False)
-'''
+
+
 
 # Iterate through results
 for result in results:
@@ -86,6 +88,8 @@ for result in results:
     print("Failed to write to DB. Error - " + e)
     print(e)
 
+for title in titles:
+	print(title)
 conn.close()
 
 
